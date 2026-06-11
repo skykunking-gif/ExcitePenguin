@@ -1,14 +1,15 @@
 using UnityEngine;
-using UnityEngine.UI; // UI（スタミナゲージ）用
+// ⬇︎ 新しいInput Systemを使うためにこれを追加
+using UnityEngine.InputSystem; 
 
 public class Penguin3DController : MonoBehaviour
 {
     private Rigidbody rb;
 
-    [Header("横移動（レーンチェンジ）")]
-    public float laneDistance = 2.0f; // レーン間の距離
-    public float laneChangeSpeed = 10f; // レーン移動のスムーズさ
-    private int currentLane = 1; // 最初は左から2番目のレーン（インデックス0〜3）
+    [Header("横移動（レーンチェンジ）設定")]
+    public float laneDistance = 2.0f; 
+    public float laneChangeSpeed = 10f; 
+    private int currentLane = 1; 
 
     [Header("前進・スピード設定")]
     public float normalSpeed = 10f;
@@ -19,81 +20,58 @@ public class Penguin3DController : MonoBehaviour
     public float heat = 0f;
     public float maxHeat = 100f;
     public bool isOverheated = false;
-    public Slider heatSlider; // インスペクターでUIのスライダーを紐付ける
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
 
     void Update()
     {
-        // スタミナ（体温）UIの更新
-        if (heatSlider != null) heatSlider.value = heat;
-
-        // オーバーヒート時の処理
         if (isOverheated)
         {
             HandleOverheat();
             return;
         }
 
-        // 2. 入力処理（レーン移動とダッシュ）
-        HandleLaneInput();
-        HandleSpeedInput();
+        // 新しいInput System用の入力処理
+        HandleInputNew();
     }
 
     void FixedUpdate()
     {
-        if (isOverheated) return;
-
-        // 移動（前進とスムーズなレーンチェンジ）
-        // 前進
-        Vector3 targetVelocity = rb.linearVelocity; // 2026以降。エラーなら velocity
-        targetVelocity.z = currentMaxSpeed; // Z軸が前進方向と仮定
-
-        // 目標の横位置（X座標）を計算
-        // （例：currentLane 0なら X=-3, 1なら X=-1, 2なら X=1, 3なら X=3）
-        float targetX = (currentLane - 1.5f) * laneDistance; // 調整が必要
-        
-        // X座標だけ目標にスムーズに近づける
-        float currentX = rb.position.x;
-        float newX = Mathf.MoveTowards(currentX, targetX, laneChangeSpeed * Time.fixedDeltaTime);
-        
-        // Rigidbodyに新しい位置と速度を適用
-        rb.MovePosition(new Vector3(newX, rb.position.y, rb.position.z));
-        rb.linearVelocity = targetVelocity; // エラーなら velocity
+        MovePenguin();
     }
 
-    // --- 各入力処理の関数 ---
-
-    void HandleLaneInput()
+    // 新しいInput Systemに対応した入力処理関数
+    void HandleInputNew()
     {
-        // A / Dキーまたは矢印キーでレーン移動
-        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+        // キーボードの現在の状態を取得
+        var keyboard = Keyboard.current;
+        if (keyboard == null) return; // キーボードが接続されていない場合は何もしない
+
+        // 1. レーンチェンジ（押した瞬間：wasPressedThisFrame）
+        if (keyboard.aKey.wasPressedThisFrame || keyboard.leftArrowKey.wasPressedThisFrame)
         {
             if (currentLane > 0) currentLane--;
         }
-        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        if (keyboard.dKey.wasPressedThisFrame || keyboard.rightArrowKey.wasPressedThisFrame)
         {
             if (currentLane < 3) currentLane++;
         }
-    }
 
-    void HandleSpeedInput()
-    {
-        // Aボタン相当（Jキー = 通常ダッシュ）
-        if (Input.GetKey(KeyCode.J))
+        // 2. スピード（押しっぱなし：isPressed）
+        // Jキー = 通常アクセル
+        if (keyboard.jKey.isPressed)
         {
             currentMaxSpeed = normalSpeed;
-            // 徐々に熱が下がる
             heat = Mathf.Max(0, heat - Time.deltaTime * 10f);
         }
-        // Bボタン相当（Kキー = ターボダッシュ）
-        else if (Input.GetKey(KeyCode.K))
+        // Kキー = ターボアクセル
+        else if (keyboard.kKey.isPressed)
         {
             currentMaxSpeed = turboSpeed;
-            // 熱が上がる
             heat += Time.deltaTime * 20f;
 
             if (heat >= maxHeat)
@@ -101,23 +79,38 @@ public class Penguin3DController : MonoBehaviour
                 isOverheated = true;
             }
         }
+        // 何も押していないとき
         else
         {
-            // 何も押していない時は自然減速
-            currentMaxSpeed = 0;
+            currentMaxSpeed = 0f;
             heat = Mathf.Max(0, heat - Time.deltaTime * 15f);
         }
     }
 
+    void MovePenguin()
+    {
+        Vector3 currentVelocity = rb.linearVelocity; // エラーなら velocity に変更
+        
+        if (isOverheated)
+        {
+            currentVelocity.z = 0;
+        }
+        else
+        {
+            currentVelocity.z = Mathf.MoveTowards(currentVelocity.z, currentMaxSpeed, 30f * Time.fixedDeltaTime);
+        }
+
+        rb.linearVelocity = currentVelocity;
+
+        float targetX = (currentLane - 1.5f) * laneDistance;
+        float newX = Mathf.MoveTowards(transform.position.x, targetX, laneChangeSpeed * Time.fixedDeltaTime);
+
+        rb.MovePosition(new Vector3(newX, transform.position.y, transform.position.z));
+    }
+
     void HandleOverheat()
     {
-        // 強制停止（Z軸の速度を0に）
-        Vector3 overHeatVel = rb.linearVelocity; // 2026以降。エラーなら velocity
-        overHeatVel.z = 0;
-        rb.linearVelocity = overHeatVel; // エラーなら velocity
-
-        heat -= Time.deltaTime * 25f; // 冷却スピードアップ
-
+        heat -= Time.deltaTime * 25f;
         if (heat <= 0)
         {
             heat = 0;
