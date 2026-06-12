@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6203123442091010992}
-  m_Layer: 0
-  m_Name: Course_Obstacle_Jump
+  m_Layer: 3
+  m_Name: Course_Obstacle_Jump01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 5717402181592462146}
   - component: {fileID: 3071197282781206581}
   - component: {fileID: 3338065625888575787}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Slope_up
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 2848110193936124202}
   - component: {fileID: 8586776514435923413}
   - component: {fileID: 6278730272480196157}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Slope_Down
   m_TagString: Untagged
   m_Icon: {fileID: 0}
