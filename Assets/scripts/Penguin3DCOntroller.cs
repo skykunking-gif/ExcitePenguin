@@ -1,6 +1,5 @@
 using UnityEngine;
-// ⬇︎ 新しいInput Systemを使うためにこれを追加
-using UnityEngine.InputSystem; 
+using UnityEngine.InputSystem;
 
 public class Penguin3DController : MonoBehaviour
 {
@@ -21,21 +20,31 @@ public class Penguin3DController : MonoBehaviour
     public float maxHeat = 100f;
     public bool isOverheated = false;
 
+    [Header("空中制御（フリップ）設定")]
+    [Tooltip("空中での回転スピード")]
+    public float flipSpeed = 150f; 
+    [Tooltip("今地面に触れているかどうか")]
+    public bool isGrounded; 
+    [Tooltip("地面と判定するレイヤー")]
+    public LayerMask groundLayer; 
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
 
     void Update()
     {
+        // 地面判定：ペンギンの中心から下方向へ、少しだけ(0.6m)見えない光線（Ray）を飛ばす
+        // カプセルやキューブの大きさに合わせて 0.6f の値は調整してください
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.8f, groundLayer);
+
         if (isOverheated)
         {
             HandleOverheat();
             return;
         }
 
-        // 新しいInput System用の入力処理
         HandleInputNew();
     }
 
@@ -44,42 +53,60 @@ public class Penguin3DController : MonoBehaviour
         MovePenguin();
     }
 
-    // 新しいInput Systemに対応した入力処理関数
     void HandleInputNew()
     {
-        // キーボードの現在の状態を取得
         var keyboard = Keyboard.current;
-        if (keyboard == null) return; // キーボードが接続されていない場合は何もしない
+        if (keyboard == null) return;
 
-        // 1. レーンチェンジ（押した瞬間：wasPressedThisFrame）
-        if (keyboard.aKey.wasPressedThisFrame || keyboard.leftArrowKey.wasPressedThisFrame)
+        // --- 1. 地面にいる時の操作 ---
+        if (isGrounded)
         {
-            if (currentLane > 0) currentLane--;
+            // レーンチェンジ
+            if (keyboard.aKey.wasPressedThisFrame || keyboard.leftArrowKey.wasPressedThisFrame)
+            {
+                if (currentLane > 0) currentLane--;
+            }
+            if (keyboard.dKey.wasPressedThisFrame || keyboard.rightArrowKey.wasPressedThisFrame)
+            {
+                if (currentLane < 3) currentLane++;
+            }
+
+            // 地面にいる時は、勝手に転ばないように回転をリセット＆固定する
+            rb.constraints = RigidbodyConstraints.FreezeRotation;
+            // 角度を真っ直ぐ（あるいは道路の傾き）に戻す補助を入れると綺麗ですが、まずは垂直に固定
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.identity, 10f * Time.deltaTime);
         }
-        if (keyboard.dKey.wasPressedThisFrame || keyboard.rightArrowKey.wasPressedThisFrame)
+        // --- 2. 空中にいる時の操作（フリップ） ---
+        else
         {
-            if (currentLane < 3) currentLane++;
+            // 空中は物理で倒れるように、回転の固定を解除する（ただしY軸のヨコ回転とZ軸のローリングは防ぐ）
+            rb.constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+
+            // Wキー または 上矢印で「前傾（おじぎ）」
+            if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed)
+            {
+                transform.Rotate(Vector3.right, flipSpeed * Time.deltaTime);
+            }
+            // Sキー または 下矢印で「後傾（ウィリー状態）」
+            if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed)
+            {
+                transform.Rotate(Vector3.left, flipSpeed * Time.deltaTime);
+            }
         }
 
-        // 2. スピード（押しっぱなし：isPressed）
-        // Jキー = 通常アクセル
+        // --- 3. スピード入力（J/K） ---
         if (keyboard.jKey.isPressed)
         {
             currentMaxSpeed = normalSpeed;
             heat = Mathf.Max(0, heat - Time.deltaTime * 10f);
         }
-        // Kキー = ターボアクセル
         else if (keyboard.kKey.isPressed)
         {
             currentMaxSpeed = turboSpeed;
             heat += Time.deltaTime * 20f;
 
-            if (heat >= maxHeat)
-            {
-                isOverheated = true;
-            }
+            if (heat >= maxHeat) isOverheated = true;
         }
-        // 何も押していないとき
         else
         {
             currentMaxSpeed = 0f;
@@ -89,23 +116,27 @@ public class Penguin3DController : MonoBehaviour
 
     void MovePenguin()
     {
-        Vector3 currentVelocity = rb.linearVelocity; // エラーなら velocity に変更
-        
+        Vector3 currentVelocity = rb.linearVelocity; // 2026年仕様。エラーなら velocity に
+
         if (isOverheated)
         {
             currentVelocity.z = 0;
         }
         else
         {
+            // 空中ではアクセルを踏んでも劇的には加速しないように、前進はスムーズ補間
             currentVelocity.z = Mathf.MoveTowards(currentVelocity.z, currentMaxSpeed, 30f * Time.fixedDeltaTime);
         }
 
         rb.linearVelocity = currentVelocity;
 
-        float targetX = (currentLane - 1.5f) * laneDistance;
-        float newX = Mathf.MoveTowards(transform.position.x, targetX, laneChangeSpeed * Time.fixedDeltaTime);
-
-        rb.MovePosition(new Vector3(newX, transform.position.y, transform.position.z));
+        // 横移動（レーンチェンジ）は地面にいる時だけ位置を固定する
+        if (isGrounded)
+        {
+            float targetX = (currentLane - 1.5f) * laneDistance;
+            float newX = Mathf.MoveTowards(transform.position.x, targetX, laneChangeSpeed * Time.fixedDeltaTime);
+            rb.MovePosition(new Vector3(newX, transform.position.y, transform.position.z));
+        }
     }
 
     void HandleOverheat()
