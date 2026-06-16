@@ -21,12 +21,15 @@ public class Penguin3DController : MonoBehaviour
     public bool isOverheated = false;
 
     [Header("空中制御（フリップ）設定")]
-    [Tooltip("空中での回転スピード")]
     public float flipSpeed = 150f; 
-    [Tooltip("今地面に触れているかどうか")]
     public bool isGrounded; 
-    [Tooltip("地面と判定するレイヤー")]
     public LayerMask groundLayer; 
+
+    [Header("転倒（ズサーッ）ギミック設定")]
+    public bool isTumbled = false; // 転倒中か
+    public float tumbleDuration = 1.5f; // 転んで滑る時間（秒）
+    private float tumbleTimer = 0f;
+    private Quaternion targetTumbleRotation; // 転倒時の寝そべる角度
 
     void Start()
     {
@@ -35,9 +38,15 @@ public class Penguin3DController : MonoBehaviour
 
     void Update()
     {
-        // 地面判定：ペンギンの中心から下方向へ、少しだけ(0.6m)見えない光線（Ray）を飛ばす
-        // カプセルやキューブの大きさに合わせて 0.6f の値は調整してください
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.8f, groundLayer);
+        // 地面判定（長さを0.9fにしてガタつき防止）
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.9f, groundLayer);
+
+        // 転倒中のカウントダウン
+        if (isTumbled)
+        {
+            HandleTumble();
+            return;
+        }
 
         if (isOverheated)
         {
@@ -58,9 +67,14 @@ public class Penguin3DController : MonoBehaviour
         var keyboard = Keyboard.current;
         if (keyboard == null) return;
 
-        // --- 1. 地面にいる時の操作 ---
         if (isGrounded)
         {
+            // 地面にいる時は勝手に転ばないように固定
+            rb.constraints = RigidbodyConstraints.FreezeRotation;
+            
+            // 角度を真っ直ぐに戻す
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.identity, 10f * Time.deltaTime);
+
             // レーンチェンジ
             if (keyboard.aKey.wasPressedThisFrame || keyboard.leftArrowKey.wasPressedThisFrame)
             {
@@ -70,31 +84,25 @@ public class Penguin3DController : MonoBehaviour
             {
                 if (currentLane < 3) currentLane++;
             }
-
-            // 地面にいる時は、勝手に転ばないように回転をリセット＆固定する
-            rb.constraints = RigidbodyConstraints.FreezeRotation;
-            // 角度を真っ直ぐ（あるいは道路の傾き）に戻す補助を入れると綺麗ですが、まずは垂直に固定
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.identity, 10f * Time.deltaTime);
         }
-        // --- 2. 空中にいる時の操作（フリップ） ---
         else
         {
-            // 空中は物理で倒れるように、回転の固定を解除する（ただしY軸のヨコ回転とZ軸のローリングは防ぐ）
+            // 空中は前後のピッチ回転のみ許可する
             rb.constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 
-            // Wキー または 上矢印で「前傾（おじぎ）」
+            // W / 上矢印で前傾
             if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed)
             {
                 transform.Rotate(Vector3.right, flipSpeed * Time.deltaTime);
             }
-            // Sキー または 下矢印で「後傾（ウィリー状態）」
+            // S / 下矢印で後傾
             if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed)
             {
                 transform.Rotate(Vector3.left, flipSpeed * Time.deltaTime);
             }
         }
 
-        // --- 3. スピード入力（J/K） ---
+        // スピード入力
         if (keyboard.jKey.isPressed)
         {
             currentMaxSpeed = normalSpeed;
@@ -118,24 +126,97 @@ public class Penguin3DController : MonoBehaviour
     {
         Vector3 currentVelocity = rb.linearVelocity; // 2026年仕様。エラーなら velocity に
 
+        if (isTumbled)
+        {
+            // 【改善】転倒中：キー入力は無視、徐々に摩擦で減速しながら滑る（ズサーッ）
+            currentVelocity.z = Mathf.MoveTowards(currentVelocity.z, 0, 8f * Time.fixedDeltaTime);
+            rb.linearVelocity = currentVelocity;
+            return;
+        }
+
         if (isOverheated)
         {
-            currentVelocity.z = 0;
+            currentVelocity.z = Mathf.MoveTowards(currentVelocity.z, 0, 15f * Time.fixedDeltaTime);
+            rb.linearVelocity = currentVelocity;
+            return;
+        }
+
+        // --- 【大修正】前進（Z軸）の速度計算 ---
+        if (isGrounded)
+        {
+            // 地面にいるときは、キー入力（目標速度）に合わせて加減速
+            currentVelocity.z = Mathf.MoveTowards(currentVelocity.z, currentMaxSpeed, 30f * Time.fixedDeltaTime);
         }
         else
         {
-            // 空中ではアクセルを踏んでも劇的には加速しないように、前進はスムーズ補間
-            currentVelocity.z = Mathf.MoveTowards(currentVelocity.z, currentMaxSpeed, 30f * Time.fixedDeltaTime);
+            // 空中にいるときは、Jキーを離しても急停止せず、空中の風の抵抗（少しだけ自然減速）で進む！
+            currentVelocity.z = Mathf.MoveTowards(currentVelocity.z, 0, 1.5f * Time.fixedDeltaTime);
         }
 
         rb.linearVelocity = currentVelocity;
 
-        // 横移動（レーンチェンジ）は地面にいる時だけ位置を固定する
+        // 横移動（地面にいる時だけ）
         if (isGrounded)
         {
             float targetX = (currentLane - 1.5f) * laneDistance;
             float newX = Mathf.MoveTowards(transform.position.x, targetX, laneChangeSpeed * Time.fixedDeltaTime);
             rb.MovePosition(new Vector3(newX, transform.position.y, transform.position.z));
+        }
+    }
+
+    // 着地時の衝突判定
+    private void OnCollisionEnter(Collision collision)
+    {
+        // 転倒中、または空中にいない（最初から接地している）なら判定しない
+        if (isTumbled) return;
+
+        // 地面レイヤーのオブジェクトにぶつかった時だけチェック
+        if (((1 << collision.gameObject.layer) & groundLayer) != 0)
+        {
+            // ペンギンの前方向（transform.forward）がどれくらい傾いているか調べる
+            // 垂直（真っ直ぐ）から前後に35度以上傾いて着地したら「転倒」
+            float landAngle = Vector3.Angle(transform.forward, Vector3.forward); 
+            
+            // もし坂道の傾きに対応させる場合は、世界の真上(Vector3.up)とペンギンの上方向の角度を測る
+            float angleFromUp = Vector3.Angle(transform.up, Vector3.up);
+
+            if (angleFromUp > 35f)
+            {
+                TriggerTumble();
+            }
+        }
+    }
+
+    // 転倒スタート
+    void TriggerTumble()
+    {
+        isTumbled = true;
+        tumbleTimer = tumbleDuration;
+
+        // 物理の回転固定を完全に解除して、お腹側にペタンと倒す
+        rb.constraints = RigidbodyConstraints.None;
+        
+        // 前方に90度パタンと倒れた角度（お腹スライディング）をターゲットにする
+        targetTumbleRotation = Quaternion.Euler(90, 0, 0);
+    }
+
+    // 転倒中の処理（ズサーッの絵面を作る）
+    void HandleTumble()
+    {
+        tumbleTimer -= Time.deltaTime;
+
+        // スムーズに横倒し（お腹這い）のポーズに回転させる
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetTumbleRotation, 15f * Time.deltaTime);
+
+        // 時間が経ったら復活
+        if (tumbleTimer <= 0f)
+        {
+            isTumbled = false;
+            // 角度を真っ直ぐに戻す準備
+            rb.constraints = RigidbodyConstraints.FreezeRotation;
+            transform.rotation = Quaternion.identity;
+            
+            // 復活時は安全のために少しだけ上方に跳ね上げる、または少し無敵時間を作ると良いです
         }
     }
 
