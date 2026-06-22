@@ -272,7 +272,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1982106628217469697, guid: 358a00b07a8ca4a35b601469e7a61660, type: 3}
       propertyPath: m_Center.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1982106628217469697, guid: 358a00b07a8ca4a35b601469e7a61660, type: 3}
       propertyPath: m_IsTrigger
