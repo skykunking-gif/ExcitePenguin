@@ -39,7 +39,7 @@ public class PenguinNPCController : MonoBehaviour
     void Update()
     {
         // 地面判定
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.9f, groundLayer);
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f, groundLayer);
 
         if (isTumbled)
         {
