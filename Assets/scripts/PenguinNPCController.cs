@@ -38,9 +38,15 @@ public class PenguinNPCController : MonoBehaviour
 
     void Update()
     {
+        RaycastHit hit;
         // 地面判定
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f, groundLayer);
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, 1.1f, groundLayer);
 
+        bool onGrass = false;
+        if (isGrounded && hit.collider.CompareTag("Grass"))
+        {
+            onGrass = true;
+        }
         if (isTumbled)
         {
             HandleTumble();
@@ -49,6 +55,11 @@ public class PenguinNPCController : MonoBehaviour
 
         // 自動思考（AIの処理）
         HandleAIThinking();
+        
+        if (onGrass)
+        {
+            currentMaxSpeed *= 0.4f; 
+        }
     }
 
     void FixedUpdate()

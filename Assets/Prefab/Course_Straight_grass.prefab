@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3741875566108709187}
   - component: {fileID: 7518621447852390202}
   - component: {fileID: 5399613716922752390}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: Lane_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   - component: {fileID: 7804153655372886342}
   - component: {fileID: 468956573417754946}
   - component: {fileID: 6200253048591755722}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: Lane_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -233,9 +233,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5573907607370894798}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: Course_Straight_grass
-  m_TagString: Untagged
+  m_TagString: Grass
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -271,7 +271,7 @@ GameObject:
   - component: {fileID: 6015974966363880191}
   - component: {fileID: 3517947058796297869}
   - component: {fileID: 3576448826304567435}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: Lane_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -383,7 +383,7 @@ GameObject:
   - component: {fileID: 6918962930803972821}
   - component: {fileID: 3108210697028054960}
   - component: {fileID: 8926686303396934782}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: Lane_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}

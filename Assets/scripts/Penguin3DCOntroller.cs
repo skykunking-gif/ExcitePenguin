@@ -38,9 +38,15 @@ public class Penguin3DController : MonoBehaviour
 
     void Update()
     {
+        RaycastHit hit;
         // 地面判定（長さを0.9fにしてガタつき防止）
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.9f, groundLayer);
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, 0.9f, groundLayer);
 
+        bool onGrass = false;
+        if (isGrounded && hit.collider.CompareTag("Grass"))
+        {
+            onGrass = true;
+        }
         // 転倒中のカウントダウン
         if (isTumbled)
         {
@@ -55,6 +61,10 @@ public class Penguin3DController : MonoBehaviour
         }
 
         HandleInputNew();
+        if (onGrass)
+        {
+            currentMaxSpeed *= 0.4f; // 40%の速度に減速（お好みで数値を調整してください）
+        }
     }
 
     void FixedUpdate()
