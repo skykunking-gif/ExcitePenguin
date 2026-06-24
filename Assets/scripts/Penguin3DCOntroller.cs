@@ -63,7 +63,7 @@ public class Penguin3DController : MonoBehaviour
         HandleInputNew();
         if (onGrass)
         {
-            currentMaxSpeed *= 0.4f; // 40%の速度に減速（お好みで数値を調整してください）
+            currentMaxSpeed *= 0.5f; // 50%の速度に減速（お好みで数値を調整してください）
         }
     }
 

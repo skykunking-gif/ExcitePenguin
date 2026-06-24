@@ -10,7 +10,7 @@ public class PenguinNPCController : MonoBehaviour
     private int currentLane = 1; 
 
     [Header("前進・スピード設定")]
-    public float normalSpeed = 9.5f; // プレイヤーよりほんの少し遅く（調整可能）
+    public float normalSpeed = 10f; // プレイヤーよりほんの少し遅く（調整可能）
     private float currentMaxSpeed;
 
     [Header("空中制御・接地設定")]
@@ -53,12 +53,10 @@ public class PenguinNPCController : MonoBehaviour
             return;
         }
 
-        // 自動思考（AIの処理）
         HandleAIThinking();
-        
         if (onGrass)
         {
-            currentMaxSpeed *= 0.4f; 
+            currentMaxSpeed *= 0.5f; 
         }
     }
 
