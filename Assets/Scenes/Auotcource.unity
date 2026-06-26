@@ -275,6 +275,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 916d3954aea6b4a9c852e0f5d2c5eb10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  straightPrefab: {fileID: 1968173905939349949, guid: 95e534f86659846a3bc2dd8223914de4, type: 3}
+  jumpPrefab: {fileID: 1765291515031560260, guid: bfca0e301a755445cbf94305b9f06329, type: 3}
+  grassPrefab: {fileID: 7180500052230920106, guid: d4f21cbdcd3e24ba9b25f8f24b95bcdf, type: 3}
+  pieceLength: 10
+  totalPieces: 40
 --- !u!4 &920215114
 Transform:
   m_ObjectHideFlags: 0
