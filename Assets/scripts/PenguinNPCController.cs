@@ -29,6 +29,8 @@ public class PenguinNPCController : MonoBehaviour
     private float tumbleTimer = 0f;
     private Quaternion targetTumbleRotation;
 
+    public bool isGoal = false;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -62,6 +64,11 @@ public class PenguinNPCController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isGoal)
+        {
+            rb.linearVelocity = Vector3.zero; // Unityのバージョンによっては rb.velocity = Vector3.zero;
+            return;
+        }
         MoveNPC();
     }
 
@@ -179,6 +186,17 @@ public class PenguinNPCController : MonoBehaviour
             isTumbled = false;
             rb.constraints = RigidbodyConstraints.FreezeRotation;
             transform.rotation = Quaternion.identity;
+        }
+    }
+
+    // NPCがゴールに触れたときの判定
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Goal"))
+        {
+            isGoal = true;
+            rb.constraints = RigidbodyConstraints.FreezeAll; // 物理挙動も完全にカチコチに固定
+            Debug.Log(gameObject.name + " がゴールしました！");
         }
     }
 }

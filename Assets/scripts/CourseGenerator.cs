@@ -91,7 +91,21 @@ public class CourseGenerator : MonoBehaviour
             }
         }
         
-        SpawnBasePiece(straightPrefab);
+        // 最後のゴール地点を生成し、ゴール判定を仕込む
+        Transform goalBase = SpawnBasePiece(straightPrefab);
+        if (goalBase != null)
+        {
+            // 最後のマスのオブジェクトに「Goal」タグをつける
+            goalBase.gameObject.tag = "Goal";
+
+            // プログラムからその場に「通り抜け可能な透明な壁（Trigger）」を出現させる
+            BoxCollider goalTrigger = goalBase.gameObject.AddComponent<BoxCollider>();
+            goalTrigger.isTrigger = true; // 通り抜け可能にする
+            
+            // センサーの大きさをコース全体（4レーン分）を覆うように広げる
+            goalTrigger.size = new Vector3(10f, 5f, 1f); 
+            goalTrigger.center = new Vector3(0f, 2.5f, 0f);
+        }
     }
 
     Transform SpawnBasePiece(GameObject prefab)

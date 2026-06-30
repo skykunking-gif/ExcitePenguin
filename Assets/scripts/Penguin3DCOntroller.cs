@@ -31,6 +31,8 @@ public class Penguin3DController : MonoBehaviour
     private float tumbleTimer = 0f;
     private Quaternion targetTumbleRotation; // 転倒時の寝そべる角度
 
+    public bool isGoal = false; // 🏁 追加：ゴールしたかどうかのフラグ
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -67,8 +69,15 @@ public class Penguin3DController : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+        void FixedUpdate()
     {
+        // 🏁 追加：ゴールしていたら、速度をゼロにしてこれ以降の移動処理をスキップする
+        if (isGoal)
+        {
+        rb.linearVelocity = Vector3.zero; // velocity の場合は rb.velocity = Vector3.zero;
+        return;
+        }
+
         MovePenguin();
     }
 
@@ -100,25 +109,25 @@ public class Penguin3DController : MonoBehaviour
             // 空中は前後のピッチ回転のみ許可する
             rb.constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 
-            // W / 上矢印で前傾
-            if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed)
+            // r で前傾
+            if (keyboard.rKey.isPressed)
             {
                 transform.Rotate(Vector3.right, flipSpeed * Time.deltaTime);
             }
-            // S / 下矢印で後傾
-            if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed)
+            // f で後傾
+            if (keyboard.fKey.isPressed)
             {
                 transform.Rotate(Vector3.left, flipSpeed * Time.deltaTime);
             }
         }
 
         // スピード入力
-        if (keyboard.jKey.isPressed)
+        if (keyboard.wKey.isPressed)
         {
             currentMaxSpeed = normalSpeed;
             heat = Mathf.Max(0, heat - Time.deltaTime * 10f);
         }
-        else if (keyboard.kKey.isPressed)
+        else if (keyboard.sKey.isPressed)
         {
             currentMaxSpeed = turboSpeed;
             heat += Time.deltaTime * 20f;
@@ -151,7 +160,7 @@ public class Penguin3DController : MonoBehaviour
             return;
         }
 
-        // --- 【大修正】前進（Z軸）の速度計算 ---
+        // ---　前進（Z軸）の速度計算 ---
         if (isGrounded)
         {
             // 地面にいるときは、キー入力（目標速度）に合わせて加減速
@@ -237,6 +246,17 @@ public class Penguin3DController : MonoBehaviour
         {
             heat = 0;
             isOverheated = false;
+        }
+    }
+
+    // 🏁 追加：トリガー（センサー）に触れたときの判定
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Goal"))
+        {
+            isGoal = true;
+            rb.constraints = RigidbodyConstraints.FreezeAll; // 物理挙動も完全にカチコチに止める
+            Debug.Log("🎉 ゴールしました！");
         }
     }
 }
