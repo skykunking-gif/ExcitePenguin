@@ -5,6 +5,14 @@ public class Penguin3DController : MonoBehaviour
 {
     private Rigidbody rb;
 
+    [Header("2人プレイ用のキー設定")]
+    public KeyCode upKey = KeyCode.W;      // 前進
+    public KeyCode boostKey = KeyCode.S;    
+    public KeyCode leftKey = KeyCode.A;
+    public KeyCode rightKey = KeyCode.D;
+    public KeyCode forwardFlipKey = KeyCode.R; // 前回り（空中制御）
+    public KeyCode backFlipKey = KeyCode.F;    // 後ろ回り（空中制御）
+
     [Header("横移動（レーンチェンジ）設定")]
     public float laneDistance = 2.0f; 
     public float laneChangeSpeed = 10f; 
@@ -95,11 +103,11 @@ public class Penguin3DController : MonoBehaviour
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.identity, 10f * Time.deltaTime);
 
             // レーンチェンジ
-            if (keyboard.aKey.wasPressedThisFrame || keyboard.leftArrowKey.wasPressedThisFrame)
+            if (Input.GetKeyDown(leftKey))
             {
                 if (currentLane > 0) currentLane--;
             }
-            if (keyboard.dKey.wasPressedThisFrame || keyboard.rightArrowKey.wasPressedThisFrame)
+            if (Input.GetKeyDown(rightKey))
             {
                 if (currentLane < 3) currentLane++;
             }
@@ -110,24 +118,24 @@ public class Penguin3DController : MonoBehaviour
             rb.constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 
             // r で前傾
-            if (keyboard.rKey.isPressed)
+            if (Input.GetKeyDown(forwardFlipKey))
             {
                 transform.Rotate(Vector3.right, flipSpeed * Time.deltaTime);
             }
             // f で後傾
-            if (keyboard.fKey.isPressed)
+            if (Input.GetKeyDown(backFlipKey))
             {
                 transform.Rotate(Vector3.left, flipSpeed * Time.deltaTime);
             }
         }
 
         // スピード入力
-        if (keyboard.wKey.isPressed)
+        if (Input.GetKeyDown(upKey))
         {
             currentMaxSpeed = normalSpeed;
             heat = Mathf.Max(0, heat - Time.deltaTime * 10f);
         }
-        else if (keyboard.sKey.isPressed)
+        else if (Input.GetKeyDown(boostKey))
         {
             currentMaxSpeed = turboSpeed;
             heat += Time.deltaTime * 20f;
