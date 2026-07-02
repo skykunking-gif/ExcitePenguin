@@ -130,12 +130,12 @@ public class Penguin3DController : MonoBehaviour
         }
 
         // スピード入力
-        if (Input.GetKeyDown(upKey))
+        if (Input.GetKey(upKey))
         {
             currentMaxSpeed = normalSpeed;
             heat = Mathf.Max(0, heat - Time.deltaTime * 10f);
         }
-        else if (Input.GetKeyDown(boostKey))
+        else if (Input.GetKey(boostKey))
         {
             currentMaxSpeed = turboSpeed;
             heat += Time.deltaTime * 20f;
@@ -264,7 +264,7 @@ public class Penguin3DController : MonoBehaviour
         {
             isGoal = true;
             rb.constraints = RigidbodyConstraints.FreezeAll; // 物理挙動も完全にカチコチに止める
-            Debug.Log("🎉 ゴールしました！");
+            Debug.Log("🎉 ゴールした！");
         }
     }
 }

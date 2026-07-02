@@ -196,7 +196,7 @@ public class PenguinNPCController : MonoBehaviour
         {
             isGoal = true;
             rb.constraints = RigidbodyConstraints.FreezeAll; // 物理挙動も完全にカチコチに固定
-            Debug.Log(gameObject.name + " がゴールしました！");
+            Debug.Log(gameObject.name + " がゴールした！");
         }
     }
 }
