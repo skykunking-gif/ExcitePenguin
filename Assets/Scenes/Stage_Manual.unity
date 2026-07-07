@@ -588,6 +588,52 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2085564801561319528, guid: 95e534f86659846a3bc2dd8223914de4, type: 3}
   m_PrefabInstance: {fileID: 1965980291}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1038645582
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1038645584}
+  - component: {fileID: 1038645583}
+  m_Layer: 0
+  m_Name: GameInitializer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1038645583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1038645582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60ee17638854f40fd9373ee185695938, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StageGameInitializer
+  npcPenguin: {fileID: 6142046343461045454}
+  player2Penguin: {fileID: 8652736876936525669, guid: 6142dedc6e0a0403d8caa91f3e587776, type: 3}
+--- !u!4 &1038645584
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1038645582}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1, y: 2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1091274615
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1892,6 +1938,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2806532dbfef44306a74b32ab2732aa0, type: 3}
+--- !u!1 &6142046343461045454 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2035783005491247916, guid: 2806532dbfef44306a74b32ab2732aa0, type: 3}
+  m_PrefabInstance: {fileID: 6142046343461045453}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6644816086669848960
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2017,3 +2068,4 @@ SceneRoots:
   - {fileID: 6142046343461045453}
   - {fileID: 975906847}
   - {fileID: 711225219}
+  - {fileID: 1038645584}
