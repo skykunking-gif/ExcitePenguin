@@ -5,6 +5,14 @@ public class Penguin3DController : MonoBehaviour
 {
     private Rigidbody rb;
 
+    [Header("2人プレイ用のキー設定")]
+    public KeyCode upKey = KeyCode.W;      // 前進
+    public KeyCode boostKey = KeyCode.S;    
+    public KeyCode leftKey = KeyCode.A;
+    public KeyCode rightKey = KeyCode.D;
+    public KeyCode forwardFlipKey = KeyCode.R; // 前回り（空中制御）
+    public KeyCode backFlipKey = KeyCode.F;    // 後ろ回り（空中制御）
+
     [Header("横移動（レーンチェンジ）設定")]
     public float laneDistance = 2.0f; 
     public float laneChangeSpeed = 10f; 
@@ -30,6 +38,8 @@ public class Penguin3DController : MonoBehaviour
     public float tumbleDuration = 1.5f; // 転んで滑る時間（秒）
     private float tumbleTimer = 0f;
     private Quaternion targetTumbleRotation; // 転倒時の寝そべる角度
+
+    public bool isGoal = false; // 🏁 追加：ゴールしたかどうかのフラグ
 
     void Start()
     {
@@ -67,8 +77,15 @@ public class Penguin3DController : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+        void FixedUpdate()
     {
+        // 🏁 追加：ゴールしていたら、速度をゼロにしてこれ以降の移動処理をスキップする
+        if (isGoal)
+        {
+        rb.linearVelocity = Vector3.zero; // velocity の場合は rb.velocity = Vector3.zero;
+        return;
+        }
+
         MovePenguin();
     }
 
@@ -86,11 +103,11 @@ public class Penguin3DController : MonoBehaviour
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.identity, 10f * Time.deltaTime);
 
             // レーンチェンジ
-            if (keyboard.aKey.wasPressedThisFrame || keyboard.leftArrowKey.wasPressedThisFrame)
+            if (Input.GetKeyDown(leftKey))
             {
                 if (currentLane > 0) currentLane--;
             }
-            if (keyboard.dKey.wasPressedThisFrame || keyboard.rightArrowKey.wasPressedThisFrame)
+            if (Input.GetKeyDown(rightKey))
             {
                 if (currentLane < 3) currentLane++;
             }
@@ -100,25 +117,25 @@ public class Penguin3DController : MonoBehaviour
             // 空中は前後のピッチ回転のみ許可する
             rb.constraints = RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 
-            // W / 上矢印で前傾
-            if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed)
+            // r で前傾
+            if (Input.GetKeyDown(forwardFlipKey))
             {
                 transform.Rotate(Vector3.right, flipSpeed * Time.deltaTime);
             }
-            // S / 下矢印で後傾
-            if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed)
+            // f で後傾
+            if (Input.GetKeyDown(backFlipKey))
             {
                 transform.Rotate(Vector3.left, flipSpeed * Time.deltaTime);
             }
         }
 
         // スピード入力
-        if (keyboard.jKey.isPressed)
+        if (Input.GetKey(upKey))
         {
             currentMaxSpeed = normalSpeed;
             heat = Mathf.Max(0, heat - Time.deltaTime * 10f);
         }
-        else if (keyboard.kKey.isPressed)
+        else if (Input.GetKey(boostKey))
         {
             currentMaxSpeed = turboSpeed;
             heat += Time.deltaTime * 20f;
@@ -151,7 +168,7 @@ public class Penguin3DController : MonoBehaviour
             return;
         }
 
-        // --- 【大修正】前進（Z軸）の速度計算 ---
+        // ---　前進（Z軸）の速度計算 ---
         if (isGrounded)
         {
             // 地面にいるときは、キー入力（目標速度）に合わせて加減速
@@ -237,6 +254,17 @@ public class Penguin3DController : MonoBehaviour
         {
             heat = 0;
             isOverheated = false;
+        }
+    }
+
+    // 🏁 追加：トリガー（センサー）に触れたときの判定
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Goal"))
+        {
+            isGoal = true;
+            rb.constraints = RigidbodyConstraints.FreezeAll; // 物理挙動も完全にカチコチに止める
+            Debug.Log("🎉 ゴールした！");
         }
     }
 }
