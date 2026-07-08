@@ -526,7 +526,7 @@ GameObject:
   - component: {fileID: 3831503348898541873}
   - component: {fileID: 6143716931249560261}
   m_Layer: 0
-  m_Name: Penguen_Emperor_Mesh_Lite
+  m_Name: 1Penguen_Emperor_Mesh_Lite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

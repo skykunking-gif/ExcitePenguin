@@ -302,7 +302,7 @@ GameObject:
   - component: {fileID: 7659379998105900202}
   - component: {fileID: 4726922400004164446}
   m_Layer: 0
-  m_Name: Penguen_Emperor_Mesh_Lite_NPC
+  m_Name: NPCPenguen_Emperor_Mesh_Lite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
