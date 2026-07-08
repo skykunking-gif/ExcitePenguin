@@ -259,7 +259,7 @@ GameObject:
   - component: {fileID: 258722986}
   - component: {fileID: 258722985}
   m_Layer: 0
-  m_Name: CinemachineCamera (1)
+  m_Name: CinemachineCamera2P
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -312,7 +312,7 @@ MonoBehaviour:
   Priority:
     Enabled: 0
     m_Value: 0
-  OutputChannel: 1
+  OutputChannel: 4
   StandbyUpdate: 2
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
@@ -391,7 +391,7 @@ MonoBehaviour:
   ShowCameraFrustum: 1
   IgnoreTimeScale: 0
   WorldUpOverride: {fileID: 0}
-  ChannelMask: -1
+  ChannelMask: 4
   UpdateMethod: 2
   BlendUpdateMethod: 1
   LensModeOverride:
@@ -576,7 +576,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &946077834 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 7863092358446512568, guid: 6142dedc6e0a0403d8caa91f3e587776, type: 3}
+  m_CorrespondingSourceObject: {fileID: 5851847773667481308, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
   m_PrefabInstance: {fileID: 4911035956945363132}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1035470505
@@ -645,7 +645,7 @@ MonoBehaviour:
   Priority:
     Enabled: 0
     m_Value: 0
-  OutputChannel: 1
+  OutputChannel: 2
   StandbyUpdate: 2
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
@@ -724,7 +724,7 @@ MonoBehaviour:
   ShowCameraFrustum: 1
   IgnoreTimeScale: 0
   WorldUpOverride: {fileID: 0}
-  ChannelMask: -1
+  ChannelMask: 2
   UpdateMethod: 2
   BlendUpdateMethod: 1
   LensModeOverride:
@@ -889,6 +889,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StageGameInitializer
   npcPenguin: {fileID: 1546820541}
   player2Penguin: {fileID: 8652736876936525669, guid: 6142dedc6e0a0403d8caa91f3e587776, type: 3}
+  camera1P: {fileID: 1209324460}
+  camera2P: {fileID: 542967244}
+  vcam1P: {fileID: 1035470505}
+  vcam2P: {fileID: 258722984}
 --- !u!4 &1237720719
 Transform:
   m_ObjectHideFlags: 0
@@ -978,55 +982,55 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 7863092358446512568, guid: 6142dedc6e0a0403d8caa91f3e587776, type: 3}
+    - target: {fileID: 4917387656707430401, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
+      propertyPath: m_Name
+      value: Penguen_Emperor_Mesh_Lite
+      objectReference: {fileID: 0}
+    - target: {fileID: 5851847773667481308, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7863092358446512568, guid: 6142dedc6e0a0403d8caa91f3e587776, type: 3}
+    - target: {fileID: 5851847773667481308, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
       propertyPath: m_LocalPosition.y
       value: 2.5
       objectReference: {fileID: 0}
-    - target: {fileID: 7863092358446512568, guid: 6142dedc6e0a0403d8caa91f3e587776, type: 3}
+    - target: {fileID: 5851847773667481308, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7863092358446512568, guid: 6142dedc6e0a0403d8caa91f3e587776, type: 3}
+    - target: {fileID: 5851847773667481308, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7863092358446512568, guid: 6142dedc6e0a0403d8caa91f3e587776, type: 3}
+    - target: {fileID: 5851847773667481308, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7863092358446512568, guid: 6142dedc6e0a0403d8caa91f3e587776, type: 3}
+    - target: {fileID: 5851847773667481308, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7863092358446512568, guid: 6142dedc6e0a0403d8caa91f3e587776, type: 3}
+    - target: {fileID: 5851847773667481308, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7863092358446512568, guid: 6142dedc6e0a0403d8caa91f3e587776, type: 3}
+    - target: {fileID: 5851847773667481308, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7863092358446512568, guid: 6142dedc6e0a0403d8caa91f3e587776, type: 3}
+    - target: {fileID: 5851847773667481308, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7863092358446512568, guid: 6142dedc6e0a0403d8caa91f3e587776, type: 3}
+    - target: {fileID: 5851847773667481308, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8652736876936525669, guid: 6142dedc6e0a0403d8caa91f3e587776, type: 3}
-      propertyPath: m_Name
-      value: Penguen_Emperor_Mesh_Lite
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 6142dedc6e0a0403d8caa91f3e587776, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
