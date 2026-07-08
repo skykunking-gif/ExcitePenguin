@@ -828,10 +828,13 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+<<<<<<< Updated upstream
     - target: {fileID: 4917387656707430401, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
       propertyPath: m_Name
       value: 1Penguen_Emperor_Mesh_Lite
       objectReference: {fileID: 0}
+=======
+>>>>>>> Stashed changes
     - target: {fileID: 5851847773667481308, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -872,6 +875,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+<<<<<<< Updated upstream
+=======
+    - target: {fileID: 4917387656707430401, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
+      propertyPath: m_Name
+      value: Penguen_Emperor_Mesh_Lite
+      objectReference: {fileID: 0}
+>>>>>>> Stashed changes
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
