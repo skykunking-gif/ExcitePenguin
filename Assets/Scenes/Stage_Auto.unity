@@ -251,6 +251,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7863092358446512568, guid: 6142dedc6e0a0403d8caa91f3e587776, type: 3}
   m_PrefabInstance: {fileID: 591991403}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &309741281 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8652736876936525669, guid: 6142dedc6e0a0403d8caa91f3e587776, type: 3}
+  m_PrefabInstance: {fileID: 591991403}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &509764121
 GameObject:
   m_ObjectHideFlags: 0
@@ -470,7 +475,7 @@ MonoBehaviour:
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
-  FollowOffset: {x: 0, y: 3, z: -10}
+  FollowOffset: {x: 10, y: 10, z: -10}
 --- !u!114 &1035470508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -495,7 +500,7 @@ MonoBehaviour:
     LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 0
   Lens:
-    FieldOfView: 55
+    FieldOfView: 60
     OrthographicSize: 5
     NearClipPlane: 0.3
     FarClipPlane: 1000
@@ -522,8 +527,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1035470505}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.14521316, y: 0, z: 0, w: 0.9894004}
-  m_LocalPosition: {x: 1, y: 5.6933947, z: -10}
+  m_LocalRotation: {x: 0.27984816, y: -0.3647052, z: 0.1159169, w: 0.8804763}
+  m_LocalPosition: {x: 11, y: 12.693395, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -666,7 +671,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 55
+  field of view: 60
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -692,8 +697,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1209324456}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.14521316, y: 0, z: 0, w: 0.9894004}
-  m_LocalPosition: {x: 1, y: 5.6933947, z: -10}
+  m_LocalRotation: {x: 0.27984816, y: -0.3647052, z: 0.1159169, w: 0.8804763}
+  m_LocalPosition: {x: 11, y: 12.693395, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -729,11 +734,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageGameInitializer
   npcPenguin: {fileID: 1546820541}
-  player2Penguin: {fileID: 8652736876936525669, guid: 6142dedc6e0a0403d8caa91f3e587776, type: 3}
-  camera1P: {fileID: 1209324460}
-  camera2P: {fileID: 0}
-  vcam1P: {fileID: 1035470505}
-  vcam2P: {fileID: 0}
+  player2Penguin: {fileID: 309741281}
 --- !u!4 &1237720719
 Transform:
   m_ObjectHideFlags: 0
