@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class Penguin3DController : MonoBehaviour
 {
@@ -7,16 +8,16 @@ public class Penguin3DController : MonoBehaviour
 
     [Header("2人プレイ用のキー設定")]
     public KeyCode upKey = KeyCode.W;      // 前進
-    public KeyCode boostKey = KeyCode.S;    
+    public KeyCode boostKey = KeyCode.S;
     public KeyCode leftKey = KeyCode.A;
     public KeyCode rightKey = KeyCode.D;
     public KeyCode forwardFlipKey = KeyCode.R; // 前回り（空中制御）
     public KeyCode backFlipKey = KeyCode.F;    // 後ろ回り（空中制御）
 
     [Header("横移動（レーンチェンジ）設定")]
-    public float laneDistance = 2.0f; 
-    public float laneChangeSpeed = 10f; 
-    private int currentLane = 1; 
+    public float laneDistance = 2.0f;
+    public float laneChangeSpeed = 10f;
+    private int currentLane = 1;
 
     [Header("前進・スピード設定")]
     public float normalSpeed = 10f;
@@ -27,11 +28,12 @@ public class Penguin3DController : MonoBehaviour
     public float heat = 0f;
     public float maxHeat = 100f;
     public bool isOverheated = false;
+    public Slider heatSlider;
 
     [Header("空中制御（フリップ）設定")]
-    public float flipSpeed = 150f; 
-    public bool isGrounded; 
-    public LayerMask groundLayer; 
+    public float flipSpeed = 150f;
+    public bool isGrounded;
+    public LayerMask groundLayer;
 
     [Header("転倒（ズサーッ）ギミック設定")]
     public bool isTumbled = false; // 転倒中か
@@ -44,12 +46,17 @@ public class Penguin3DController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+
+        if (heatSlider != null)
+        {
+            heatSlider.minValue = 0f;
+            heatSlider.maxValue = maxHeat;
+        }
     }
 
     void Update()
     {
         RaycastHit hit;
-        // 地面判定（長さを0.9fにしてガタつき防止）
         isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, 0.9f, groundLayer);
 
         bool onGrass = false;
@@ -57,7 +64,10 @@ public class Penguin3DController : MonoBehaviour
         {
             onGrass = true;
         }
-        // 転倒中のカウントダウン
+
+        // ★ スライダー更新を早期returnより前に移動
+        UpdateHeatSlider();
+
         if (isTumbled)
         {
             HandleTumble();
@@ -73,17 +83,25 @@ public class Penguin3DController : MonoBehaviour
         HandleInputNew();
         if (onGrass)
         {
-            currentMaxSpeed *= 0.5f; // 50%の速度に減速（お好みで数値を調整してください）
+            currentMaxSpeed *= 0.5f;
         }
     }
 
-        void FixedUpdate()
+    void UpdateHeatSlider()
+    {
+        if (heatSlider != null)
+        {
+            heatSlider.value = heat;
+        }
+    }
+
+    void FixedUpdate()
     {
         // 🏁 追加：ゴールしていたら、速度をゼロにしてこれ以降の移動処理をスキップする
         if (isGoal)
         {
-        rb.linearVelocity = Vector3.zero; // velocity の場合は rb.velocity = Vector3.zero;
-        return;
+            rb.linearVelocity = Vector3.zero; // velocity の場合は rb.velocity = Vector3.zero;
+            return;
         }
 
         MovePenguin();
@@ -98,7 +116,7 @@ public class Penguin3DController : MonoBehaviour
         {
             // 地面にいる時は勝手に転ばないように固定
             rb.constraints = RigidbodyConstraints.FreezeRotation;
-            
+
             // 角度を真っ直ぐに戻す
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.identity, 10f * Time.deltaTime);
 
@@ -202,8 +220,8 @@ public class Penguin3DController : MonoBehaviour
         {
             // ペンギンの前方向（transform.forward）がどれくらい傾いているか調べる
             // 垂直（真っ直ぐ）から前後に35度以上傾いて着地したら「転倒」
-            float landAngle = Vector3.Angle(transform.forward, Vector3.forward); 
-            
+            float landAngle = Vector3.Angle(transform.forward, Vector3.forward);
+
             // もし坂道の傾きに対応させる場合は、世界の真上(Vector3.up)とペンギンの上方向の角度を測る
             float angleFromUp = Vector3.Angle(transform.up, Vector3.up);
 
@@ -222,7 +240,7 @@ public class Penguin3DController : MonoBehaviour
 
         // 物理の回転固定を完全に解除して、お腹側にペタンと倒す
         rb.constraints = RigidbodyConstraints.None;
-        
+
         // 前方に90度パタンと倒れた角度（お腹スライディング）をターゲットにする
         targetTumbleRotation = Quaternion.Euler(90, 0, 0);
     }
@@ -242,7 +260,7 @@ public class Penguin3DController : MonoBehaviour
             // 角度を真っ直ぐに戻す準備
             rb.constraints = RigidbodyConstraints.FreezeRotation;
             transform.rotation = Quaternion.identity;
-            
+
             // 復活時は安全のために少しだけ上方に跳ね上げる、または少し無敵時間を作ると良いです
         }
     }
