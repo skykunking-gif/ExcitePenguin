@@ -1674,7 +1674,7 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: "\u64CD\u4F5C\u65B9\u6CD5\uFF1A\nW \u524D\u9032\nS \u30D6\u30FC\u30B9\u30C8\nA
-    \u5DE6\u30EC\u30FC\u30F3\u3078\nD \u53F3\u30EC\u30FC\u30F3\u3078"
+    \u5DE6\u30EC\u30FC\u30F3\u3078\nD \u53F3\u30EC\u30FC\u30F3\u3078\n"
 --- !u!222 &2057604406
 CanvasRenderer:
   m_ObjectHideFlags: 0
