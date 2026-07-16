@@ -3838,7 +3838,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1968173905939349949, guid: 95e534f86659846a3bc2dd8223914de4, type: 3}
       propertyPath: m_Name
-      value: Course_Straight_Standard (26)
+      value: Course_Straight_Standard (26h)
       objectReference: {fileID: 0}
     - target: {fileID: 2085564801561319528, guid: 95e534f86659846a3bc2dd8223914de4, type: 3}
       propertyPath: m_LocalPosition.x
