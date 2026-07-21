@@ -1,18 +1,14 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// レースの進行管理役。
-/// カウントダウン終了でタイム計測を開始し、いずれかのプレイヤーが
-/// ゴール（isGoal == true）した時点で結果を確定してResultControllerに渡す。
+/// カウントダウン終了でタイム計測を開始し、プレイ中は経過タイムをTimeTextに表示。
+/// いずれかのプレイヤーがゴール（isGoal == true）した時点で結果を確定してResultControllerに渡す。
 ///
-/// 【使い方】
-/// 1. プレイシーンの空オブジェクト（例："RaceManager"）にこのスクリプトをアタッチ
-/// 2. player1 に 1P（Penguin3DController）をドラッグ
-/// 3. モードに応じて player2（2P用Penguin3DController）または npc（PenguinNPCController）をドラッグ
-///    ※片方は使わないので空のままでOK
-/// 4. resultController に ResultController をドラッグ
-/// 5. CountdownController の onCountdownFinished イベントに
-///    この RaceManager.OnRaceStart をInspector上で登録する
+/// timeText に プレイ中のタイム表示用Text(Legacy)
+/// CountdownController の onCountdownFinished イベントに
+/// この RaceManager.OnRaceStart をInspector上で登録
 /// </summary>
 public class RaceManager : MonoBehaviour
 {
@@ -20,19 +16,29 @@ public class RaceManager : MonoBehaviour
     [SerializeField] private Penguin3DController player1;  // 1P（人間操作）
     [SerializeField] private Penguin3DController player2;  // 2P（人間操作、vs2Pモード用）
     [SerializeField] private PenguinNPCController npc;      // NPC（vsNPCモード用）
-
+ 
     [Header("表示名（リザルト画面に出す名前）")]
     [SerializeField] private string player1Name = "1P";
     [SerializeField] private string player2Name = "2P";
     [SerializeField] private string npcName = "NPC";
-
+ 
     [Header("参照")]
     [SerializeField] private ResultController resultController;
-
+    [SerializeField] private Text timeText; // プレイ中のタイム表示（"M:SS:m"形式、Text/Legacy）
+ 
     private bool isRacing = false;
     private bool raceFinished = false;
     private float raceStartTime;
-
+    private int currentMode; // OnRaceStart時点のGameMode（0:NPC 1:2P）
+ 
+    // 1P側のゴール状況
+    private bool player1Finished = false;
+    private float player1FinishTime;
+ 
+    // 対戦相手側（NPC or 2P）のゴール状況
+    private bool opponentFinished = false;
+    private float opponentFinishTime;
+ 
     /// <summary>
     /// CountdownController.onCountdownFinished から呼び出す
     /// </summary>
@@ -41,47 +47,85 @@ public class RaceManager : MonoBehaviour
         isRacing = true;
         raceFinished = false;
         raceStartTime = Time.time;
+        currentMode = PlayerPrefs.GetInt("GameMode", 0); // 0:NPC 1:2P
+ 
+        player1Finished = false;
+        opponentFinished = false;
     }
-
+ 
     private void Update()
     {
         if (!isRacing || raceFinished) return;
-
-        // MainMenuManagerが保存したGameModeと同じキーを見て、対戦相手を判定する
-        int mode = PlayerPrefs.GetInt("GameMode", 0); // 0:NPC 1:2P
-
-        if (player1 != null && player1.isGoal)
+ 
+        UpdateTimeDisplay();
+ 
+        // 1Pのゴール検出（一度ゴールしたら二度と上書きしない）
+        if (!player1Finished && player1 != null && player1.isGoal)
         {
-            FinishRace(player1Name);
-            return;
+            player1Finished = true;
+            player1FinishTime = Time.time - raceStartTime;
         }
-
-        if (mode == 0)
+ 
+        // 対戦相手（モードに応じてNPC or 2P）のゴール検出
+        if (!opponentFinished)
         {
-            if (npc != null && npc.isGoal)
+            bool opponentGoaled = currentMode == 0
+                ? (npc != null && npc.isGoal)
+                : (player2 != null && player2.isGoal);
+ 
+            if (opponentGoaled)
             {
-                FinishRace(npcName);
+                opponentFinished = true;
+                opponentFinishTime = Time.time - raceStartTime;
             }
         }
-        else
+ 
+        // 両者ともゴールしたらリザルト確定
+        if (player1Finished && opponentFinished)
         {
-            if (player2 != null && player2.isGoal)
-            {
-                FinishRace(player2Name);
-            }
+            FinishRace();
         }
     }
-
-    private void FinishRace(string winnerName)
+ 
+    private void UpdateTimeDisplay()
+    {
+        if (timeText == null) return;
+        timeText.text = FormatTime(Time.time - raceStartTime);
+    }
+ 
+    private void FinishRace()
     {
         raceFinished = true;
         isRacing = false;
-
-        float elapsedTime = Time.time - raceStartTime;
-
+ 
+        // 先にゴールした方が勝者
+        bool player1Wins = player1FinishTime <= opponentFinishTime;
+        string winnerName = player1Wins
+            ? player1Name
+            : (currentMode == 0 ? npcName : player2Name);
+        float winnerTime = player1Wins ? player1FinishTime : opponentFinishTime;
+ 
+        if (timeText != null)
+        {
+            timeText.text = FormatTime(winnerTime);
+        }
+ 
         if (resultController != null)
         {
-            resultController.ShowResult(winnerName, elapsedTime);
+            resultController.ShowResult(winnerName, winnerTime);
         }
     }
+ 
+    /// <summary>
+    /// 秒数を "M:SS:m" 形式（分:秒:1/100秒）に変換する（ResultControllerと同じ表記）
+    /// </summary>
+    private string FormatTime(float seconds)
+    {
+        int minutes = Mathf.FloorToInt(seconds / 60f);
+        int secs = Mathf.FloorToInt(seconds % 60f);
+        int centis = Mathf.FloorToInt((seconds * 100f) % 100f);
+ 
+        return $"{minutes}:{secs:00}:{centis:00}";
+    }
 }
+ 

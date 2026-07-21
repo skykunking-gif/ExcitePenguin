@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using TMPro;
 
 /// <summary>
 /// ゴール後のリザルト画面。
@@ -10,11 +9,15 @@ using TMPro;
 /// 【Hierarchy構成例】
 /// Canvas
 ///  └ ResultPanel (最初は非アクティブにしておく)
-///      ├ "result" (TMP_Text, 見出し)
-///      ├ WinnerText (TMP_Text) → "勝者：AAA"
-///      ├ TimeText (TMP_Text)   → "タイム：M:SS:m"
+///      ├ "result" (Text、見出し)
+///      ├ WinnerText (Text/Legacy) → "勝者：AAA"
+///      ├ TimeText (Text/Legacy)   → "タイム：M:SS:m"
 ///      ├ RetryButton (Button)
 ///      └ TitleButton (Button)
+///
+/// ※ 日本語表示はTMPのフォントアセット（日本語グリフ）を用意しなくても文字化けしない
+///   Text(Legacy)を使っています。見た目にこだわりたくなったら、日本語フォントアセットを
+///   作った上でTMP_Textに戻すことも可能です。
 ///
 /// 【使い方】
 /// ゴール判定をしているスクリプト（レースマネージャー等）から:
@@ -25,8 +28,8 @@ public class ResultController : MonoBehaviour
 {
     [Header("UI参照")]
     [SerializeField] private GameObject resultPanel;   // 結果表示パネル（最初は非表示）
-    [SerializeField] private TMP_Text winnerText;       // 「勝者：AAA」
-    [SerializeField] private TMP_Text timeText;         // 「タイム：M:SS:m」
+    [SerializeField] private Text winnerText;           // 「勝者：AAA」（Text/Legacy）
+    [SerializeField] private Text timeText;              // 「タイム：M:SS:m」（Text/Legacy）
     [SerializeField] private Button retryButton;
     [SerializeField] private Button titleButton;
 
