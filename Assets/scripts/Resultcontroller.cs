@@ -5,24 +5,6 @@ using UnityEngine.SceneManagement;
 /// <summary>
 /// ゴール後のリザルト画面。
 /// レース終了処理（ゴール判定）側から ShowResult(勝者名, タイム秒) を呼び出すと結果パネルが表示される。
-///
-/// 【Hierarchy構成例】
-/// Canvas
-///  └ ResultPanel (最初は非アクティブにしておく)
-///      ├ "result" (Text、見出し)
-///      ├ WinnerText (Text/Legacy) → "勝者：AAA"
-///      ├ TimeText (Text/Legacy)   → "タイム：M:SS:m"
-///      ├ RetryButton (Button)
-///      └ TitleButton (Button)
-///
-/// ※ 日本語表示はTMPのフォントアセット（日本語グリフ）を用意しなくても文字化けしない
-///   Text(Legacy)を使っています。見た目にこだわりたくなったら、日本語フォントアセットを
-///   作った上でTMP_Textに戻すことも可能です。
-///
-/// 【使い方】
-/// ゴール判定をしているスクリプト（レースマネージャー等）から:
-///   resultController.ShowResult("AAA", elapsedTime);
-/// のように呼び出してください。
 /// </summary>
 public class ResultController : MonoBehaviour
 {
