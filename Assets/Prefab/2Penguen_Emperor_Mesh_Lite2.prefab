@@ -34,15 +34,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4917387656707430401, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
       propertyPath: m_Name
-      value: Penguen_Emperor_Mesh_Lite2
+      value: 2Penguen_Emperor_Mesh_Lite2
       objectReference: {fileID: 0}
     - target: {fileID: 4917387656707430401, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
       propertyPath: m_IsActive
-<<<<<<< Updated upstream:Assets/Prefab/2Penguen_Emperor_Mesh_Lite2.prefab
-      value: 1
-=======
       value: 0
->>>>>>> Stashed changes:Assets/Prefab/Penguen_Emperor_Mesh_Lite2.prefab
       objectReference: {fileID: 0}
     - target: {fileID: 5851847773667481308, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
       propertyPath: m_LocalPosition.x

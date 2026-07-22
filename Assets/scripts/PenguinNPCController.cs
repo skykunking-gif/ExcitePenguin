@@ -10,7 +10,7 @@ public class PenguinNPCController : MonoBehaviour
     private int currentLane = 1; 
 
     [Header("前進・スピード設定")]
-    public float normalSpeed = 10f; // プレイヤーよりほんの少し遅く（調整可能）
+    public float normalSpeed = 12f; 
     private float currentMaxSpeed;
 
     [Header("空中制御・接地設定")]
@@ -40,6 +40,7 @@ public class PenguinNPCController : MonoBehaviour
 
     void Update()
     {
+        if (isGoal) return;
         RaycastHit hit;
         // 地面判定
         isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, 1.1f, groundLayer);
