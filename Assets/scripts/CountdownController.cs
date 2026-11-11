@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
@@ -24,6 +25,17 @@ public class CountdownController : MonoBehaviour
 {
     [Header("UI参照")]
     [SerializeField] private TMP_Text countdownText;
+
+    [Header("画像で表示する場合（未設定ならテキストを使う）")]
+    [Tooltip("カウントダウン画像を表示する Image")]
+    [SerializeField] private Image countdownImage;
+    [SerializeField] private Sprite readySprite;   // READY
+    [SerializeField] private Sprite threeSprite;   // 3
+    [SerializeField] private Sprite twoSprite;     // 2
+    [SerializeField] private Sprite oneSprite;     // 1
+    [SerializeField] private Sprite goSprite;      // GO!
+    [Tooltip("READY画像を出しておく時間（秒）")]
+    [SerializeField] private float readyDisplayDuration = 1f;
 
     [Header("カウントダウン設定")]
     [SerializeField] private float numberDisplayDuration = 1f;
@@ -56,38 +68,68 @@ public class CountdownController : MonoBehaviour
         SetPlayerControlEnabled(false);
         onCountdownStart?.Invoke();
 
+        // READY画像（画像が未設定のシーンでは自動的に飛ばされる）
+        yield return StartCoroutine(ShowStep(null, readySprite, readyDisplayDuration));
+
+        Sprite[] numberSprites = { threeSprite, twoSprite, oneSprite };
         for (int count = 3; count >= 1; count--)
         {
-            yield return StartCoroutine(ShowNumber(count.ToString(), numberDisplayDuration));
+            yield return StartCoroutine(ShowStep(count.ToString(), numberSprites[3 - count], numberDisplayDuration));
         }
 
-        yield return StartCoroutine(ShowNumber(goText, goDisplayDuration));
+        yield return StartCoroutine(ShowStep(goText, goSprite, goDisplayDuration));
 
-        countdownText.gameObject.SetActive(false);
+        HideAll();
         SetPlayerControlEnabled(true);
         onCountdownFinished?.Invoke();
     }
 
-    private IEnumerator ShowNumber(string text, float duration)
+    /// <summary>1ステップ分（READY／3／2／1／GO!）を表示する。画像があれば画像、無ければテキスト。</summary>
+    private IEnumerator ShowStep(string text, Sprite sprite, float duration)
     {
-        countdownText.text = text;
-        countdownText.transform.localScale = Vector3.one * popScale;
+        Transform target = null;
+
+        if (countdownImage != null && sprite != null)
+        {
+            countdownImage.sprite = sprite;
+            countdownImage.gameObject.SetActive(true);
+            if (countdownText != null) countdownText.gameObject.SetActive(false);
+            target = countdownImage.transform;
+        }
+        else if (countdownText != null && text != null)
+        {
+            countdownText.text = text;
+            countdownText.gameObject.SetActive(true);
+            if (countdownImage != null) countdownImage.gameObject.SetActive(false);
+            target = countdownText.transform;
+        }
+
+        // 表示するものが無いステップ（画像未設定のREADYなど）は飛ばす
+        if (target == null) yield break;
+
+        target.localScale = Vector3.one * popScale;
 
         float t = 0f;
         while (t < popDuration)
         {
             t += Time.deltaTime;
-            countdownText.transform.localScale = Vector3.Lerp(
+            target.localScale = Vector3.Lerp(
                 Vector3.one * popScale, Vector3.one, t / popDuration);
             yield return null;
         }
-        countdownText.transform.localScale = Vector3.one;
+        target.localScale = Vector3.one;
 
         float remaining = duration - popDuration;
         if (remaining > 0f)
         {
             yield return new WaitForSeconds(remaining);
         }
+    }
+
+    private void HideAll()
+    {
+        if (countdownText != null) countdownText.gameObject.SetActive(false);
+        if (countdownImage != null) countdownImage.gameObject.SetActive(false);
     }
 
     private void SetPlayerControlEnabled(bool value)

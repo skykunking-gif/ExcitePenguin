@@ -21,6 +21,8 @@ public class RaceManager : MonoBehaviour
     [Header("参照")]
     [SerializeField] private ResultController resultController;
     [SerializeField] private Text timeText; // レース中（左上）のタイム表示。Text/Legacy
+    [Tooltip("どちらかがゴールした時に出す GOAL! バナー")]
+    [SerializeField] private GameObject goalBanner;
 
     private bool isRacing = false;
     private bool raceFinished = false;
@@ -48,6 +50,7 @@ public class RaceManager : MonoBehaviour
         player1Finished = false;
         opponentFinished = false;
 
+        if (goalBanner != null) goalBanner.SetActive(false);
         if (timeText != null) timeText.gameObject.SetActive(true);
     }
 
@@ -62,6 +65,7 @@ public class RaceManager : MonoBehaviour
         {
             player1Finished = true;
             player1FinishTime = Time.time - raceStartTime;
+            ShowGoalBanner();
         }
 
         // 対戦相手（モードに応じてNPC or 2P）のゴール検出
@@ -75,6 +79,7 @@ public class RaceManager : MonoBehaviour
             {
                 opponentFinished = true;
                 opponentFinishTime = Time.time - raceStartTime;
+                ShowGoalBanner();
             }
         }
 
@@ -83,6 +88,12 @@ public class RaceManager : MonoBehaviour
         {
             FinishRace();
         }
+    }
+
+    /// <summary>どちらかが先にゴールした瞬間に GOAL! バナーを出す</summary>
+    private void ShowGoalBanner()
+    {
+        if (goalBanner != null) goalBanner.SetActive(true);
     }
 
     private void UpdateTimeDisplay()
@@ -101,18 +112,30 @@ public class RaceManager : MonoBehaviour
         string winnerName = player1Wins
             ? player1Name
             : (currentMode == 0 ? npcName : player2Name);
-        float winnerTime = player1Wins ? player1FinishTime : opponentFinishTime;
 
-        // 左上のレース中タイマーは消し、リザルト側（中央）だけ表示する
-        if (timeText != null)
-        {
-            timeText.gameObject.SetActive(false);
-        }
+        // 左上のレース中タイマーと GOAL! バナーは消して、リザルトに切り替える
+        if (timeText != null) timeText.gameObject.SetActive(false);
+        if (goalBanner != null) goalBanner.SetActive(false);
 
         if (resultController != null)
         {
-            resultController.ShowResult(winnerName, winnerTime);
+            resultController.ShowResult(winnerName,
+                player1FinishTime, GetPlayer1Falls(),
+                opponentFinishTime, GetOpponentFalls());
         }
+    }
+
+    /// <summary>1Pがこけた回数</summary>
+    private int GetPlayer1Falls()
+    {
+        return player1 != null ? player1.tumbleCount : 0;
+    }
+
+    /// <summary>対戦相手（NPC or 2P）がこけた回数</summary>
+    private int GetOpponentFalls()
+    {
+        if (currentMode == 0) return npc != null ? npc.tumbleCount : 0;
+        return player2 != null ? player2.tumbleCount : 0;
     }
 
     /// <summary>

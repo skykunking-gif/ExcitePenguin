@@ -25,6 +25,7 @@ public class Penguin3DController : MonoBehaviour
     private float currentMaxSpeed;
 
     [Header("スタミナ（体温）設定")]
+    public bool isBoosting = false; // ブーストキーを押している間 true（演出スクリプト用）
     public float heat = 0f;
     public float maxHeat = 100f;
     public bool isOverheated = false;
@@ -37,6 +38,7 @@ public class Penguin3DController : MonoBehaviour
 
     [Header("転倒（ズサーッ）ギミック設定")]
     public bool isTumbled = false; // 転倒中か
+    public int tumbleCount = 0;    // 転んだ回数（リザルト表示用）
     public float tumbleDuration = 1.5f; // 転んで滑る時間（秒）
     private float tumbleTimer = 0f;
     private Quaternion targetTumbleRotation; // 転倒時の寝そべる角度
@@ -56,6 +58,9 @@ public class Penguin3DController : MonoBehaviour
 
     void Update()
     {
+        // 転倒中・オーバーヒート中は下の early return でここが false のままになる
+        isBoosting = false;
+
         RaycastHit hit;
         isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, 0.9f, groundLayer);
 
@@ -91,7 +96,9 @@ public class Penguin3DController : MonoBehaviour
     {
         if (heatSlider != null)
         {
-            heatSlider.value = heat;
+            // ゲージは「残り（スタミナ）」を表示する。
+            // 最初は満タンで、ブーストで heat が上がるほど減っていく。
+            heatSlider.value = maxHeat - heat;
         }
     }
 
@@ -157,6 +164,7 @@ public class Penguin3DController : MonoBehaviour
         {
             currentMaxSpeed = turboSpeed;
             heat += Time.deltaTime * 20f;
+            isBoosting = true;
 
             if (heat >= maxHeat) isOverheated = true;
         }
@@ -236,6 +244,7 @@ public class Penguin3DController : MonoBehaviour
     void TriggerTumble()
     {
         isTumbled = true;
+        tumbleCount++;
         tumbleTimer = tumbleDuration;
 
         // 物理の回転固定を完全に解除して、お腹側にペタンと倒す

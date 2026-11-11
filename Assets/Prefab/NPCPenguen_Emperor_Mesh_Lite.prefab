@@ -301,6 +301,9 @@ GameObject:
   - component: {fileID: 839651965729279232}
   - component: {fileID: 7659379998105900202}
   - component: {fileID: 4726922400004164446}
+  - component: {fileID: 1122334455667788002}
+  - component: {fileID: 1122334455667788004}
+  - component: {fileID: 1122334455667788008}
   m_Layer: 0
   m_Name: NPCPenguen_Emperor_Mesh_Lite
   m_TagString: Untagged
@@ -1057,3 +1060,89 @@ Transform:
   - {fileID: 2363666148618353881}
   m_Father: {fileID: 170636741423042696}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1122334455667788002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2035783005491247916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a304ee15dd5b4e9683321eda42efcb60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PenguinTailWag
+  tailBones:
+  - {fileID: 3839961651916410836}
+  - {fileID: 5713561057291953296}
+  autoFindNames:
+  - DEF-spine.001
+  - DEF-spine.002
+  maxSwingAngle: 22
+  wagPerSpeed: 0.35
+  minWagFrequency: 0.5
+  maxWagFrequency: 5
+  speedForMaxSwing: 12
+  minSpeedToWag: 0.5
+  segmentDelay: 0.12
+  tipSwingMultiplier: 1.3
+  blendSpeed: 6
+  body: {fileID: 0}
+--- !u!114 &1122334455667788004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2035783005491247916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f3c21d9e4a4c1f8a6d05e3f2c7b910, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PenguinWingFlap
+  leftWingBones:
+  - {fileID: 1900949541859894458}
+  - {fileID: 7085762819342463674}
+  - {fileID: 3049633315285522565}
+  rightWingBones:
+  - {fileID: 2363666148618353881}
+  - {fileID: 7292341770712225727}
+  - {fileID: 6823932740528875690}
+  autoFindLeftNames:
+  - DEF-Wing.L
+  - DEF-Wing.001.L
+  - DEF-Wing.002.L
+  autoFindRightNames:
+  - DEF-Wing.R
+  - DEF-Wing.001.R
+  - DEF-Wing.002.R
+  maxFlapAngle: 45
+  spreadAngle: 20
+  flapFrequency: 3
+  segmentDelay: 0.1
+  tipFlapMultiplier: 1.4
+  blendSpeed: 8
+  flipDirection: 0
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  groundCheckDistance: 0.9
+  body: {fileID: 0}
+--- !u!114 &1122334455667788008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2035783005491247916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6b93f01a84d4e82bf15d7c0a9e34b27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PenguinTailColor
+  enableTailColor: 1
+  tailColorHex: '#4298F5'
+  tailBoneNames:
+  - DEF-spine.001
+  - DEF-spine.002
+  minWeight: 0.5

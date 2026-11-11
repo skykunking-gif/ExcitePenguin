@@ -80,6 +80,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1122334455667788006, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
+      propertyPath: applyToThisPenguin
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1122334455667788007, guid: 9ee64ededaade445eace8692309f9f1b, type: 3}
+      propertyPath: enableTailColor
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

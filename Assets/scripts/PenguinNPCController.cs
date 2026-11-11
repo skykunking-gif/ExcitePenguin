@@ -25,6 +25,7 @@ public class PenguinNPCController : MonoBehaviour
 
     [Header("転倒（ズサーッ）ギミック設定")]
     public bool isTumbled = false;
+    public int tumbleCount = 0;    // 転んだ回数（リザルト表示用）
     public float tumbleDuration = 1.7f;
     private float tumbleTimer = 0f;
     private Quaternion targetTumbleRotation;
@@ -172,6 +173,7 @@ public class PenguinNPCController : MonoBehaviour
     void TriggerTumble()
     {
         isTumbled = true;
+        tumbleCount++;
         tumbleTimer = tumbleDuration;
         rb.constraints = RigidbodyConstraints.None;
         targetTumbleRotation = Quaternion.Euler(90, 0, 0);

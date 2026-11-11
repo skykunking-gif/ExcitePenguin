@@ -525,6 +525,11 @@ GameObject:
   - component: {fileID: 110008615680818081}
   - component: {fileID: 3831503348898541873}
   - component: {fileID: 6143716931249560261}
+  - component: {fileID: 1122334455667788001}
+  - component: {fileID: 1122334455667788003}
+  - component: {fileID: 1122334455667788005}
+  - component: {fileID: 1122334455667788006}
+  - component: {fileID: 1122334455667788007}
   m_Layer: 0
   m_Name: 1Penguen_Emperor_Mesh_Lite
   m_TagString: Untagged
@@ -561,6 +566,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a75e16e42c75d4e2badd32bc91fbaf3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Penguin3DController
+  upKey: 119
+  boostKey: 115
+  leftKey: 97
+  rightKey: 100
+  forwardFlipKey: 114
+  backFlipKey: 102
   laneDistance: 2
   laneChangeSpeed: 10
   normalSpeed: 10
@@ -568,6 +579,7 @@ MonoBehaviour:
   heat: 0
   maxHeat: 100
   isOverheated: 0
+  heatSlider: {fileID: 0}
   flipSpeed: 150
   isGrounded: 0
   groundLayer:
@@ -575,6 +587,7 @@ MonoBehaviour:
     m_Bits: 8
   isTumbled: 0
   tumbleDuration: 1.5
+  isGoal: 0
 --- !u!54 &3831503348898541873
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -625,6 +638,74 @@ CapsuleCollider:
   m_Height: 1.5
   m_Direction: 1
   m_Center: {x: 0, y: 0.7, z: 0}
+--- !u!114 &1122334455667788001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4917387656707430401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a304ee15dd5b4e9683321eda42efcb60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PenguinTailWag
+  tailBones:
+  - {fileID: 1966277901965460063}
+  - {fileID: 5029727117065163830}
+  autoFindNames:
+  - DEF-spine.001
+  - DEF-spine.002
+  maxSwingAngle: 22
+  wagPerSpeed: 0.3
+  minWagFrequency: 5
+  maxWagFrequency: 5
+  speedForMaxSwing: 12
+  minSpeedToWag: 0.5
+  segmentDelay: 0.12
+  tipSwingMultiplier: 1.3
+  blendSpeed: 6
+  body: {fileID: 0}
+--- !u!114 &1122334455667788003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4917387656707430401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7f3c21d9e4a4c1f8a6d05e3f2c7b910, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PenguinWingFlap
+  leftWingBones:
+  - {fileID: 1792828393688636420}
+  - {fileID: 2567547440295805191}
+  - {fileID: 7202503926447938025}
+  rightWingBones:
+  - {fileID: 2376007484729133203}
+  - {fileID: 6333421121252489483}
+  - {fileID: 4436013992538581026}
+  autoFindLeftNames:
+  - DEF-Wing.L
+  - DEF-Wing.001.L
+  - DEF-Wing.002.L
+  autoFindRightNames:
+  - DEF-Wing.R
+  - DEF-Wing.001.R
+  - DEF-Wing.002.R
+  maxFlapAngle: 45
+  spreadAngle: 20
+  flapFrequency: 3
+  segmentDelay: 0.1
+  tipFlapMultiplier: 1.4
+  blendSpeed: 8
+  flipDirection: 0
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  groundCheckDistance: 0.9
+  body: {fileID: 0}
 --- !u!1 &5070334914998422830
 GameObject:
   m_ObjectHideFlags: 0
@@ -1060,3 +1141,61 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7515972156380135265}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1122334455667788005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4917387656707430401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c1e9a7b2d5f4e6a8b3c0d1e2f3a4b5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PenguinBoostLean
+  bodyRoot: {fileID: 8886893104236139372}
+  autoFindNames:
+  - Armature
+  leanAngle: 12
+  swayAngle: 10
+  swayFrequency: 2
+  swayMode: 0
+  blendSpeed: 6
+  invertLean: 0
+  controller: {fileID: 0}
+--- !u!114 &1122334455667788006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4917387656707430401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d2a7c4e1b8f49a3ae7c6d90f2b31a48, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PenguinColorOption
+  applyToThisPenguin: 1
+  forceColorIndex: -1
+  hueMin: 0
+  hueMax: 0.14
+  minSaturation: 0.3
+  textureProperty: _BaseMap
+--- !u!114 &1122334455667788007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4917387656707430401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6b93f01a84d4e82bf15d7c0a9e34b27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PenguinTailColor
+  enableTailColor: 0
+  tailColorHex: '#4298F5'
+  tailBoneNames:
+  - DEF-spine.001
+  - DEF-spine.002
+  minWeight: 0.5
